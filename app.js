@@ -1,19 +1,21 @@
+const path = require('path');
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const adminroutes=require('./routes/admin');
-const shoproutes=require('./routes/shop');
 
 const app = express();
 
-// Middleware to parse URL-encoded data
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/admin',adminroutes);
-app.use('/shop',shoproutes);
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
-app.use((req,res,next)=>{
-  res.status(404).send('<h1>Page not Found</h1>');
-})
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
+
+app.use((req, res, next) => {
+    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
 });
+
+app.listen(3000);
