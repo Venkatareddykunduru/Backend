@@ -1,11 +1,23 @@
-const http = require('http');
+const express = require('express');
+const app = express();
 
-const funchandler=require('./routes');
+// First middleware
+app.use((req, res, next) => {
+  console.log('First middleware');
+  next();
+});
 
-// Create the server
-const server = http.createServer(funchandler);
+// Second middleware
+app.use((req, res, next) => {
+  console.log('Second middleware');
+  next();
+});
 
-const PORT = 4000;
-server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}/`);
+// Route handler
+app.get('/', (req, res) => {
+  res.send('<h1> hello to node js </h1>');
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
 });
