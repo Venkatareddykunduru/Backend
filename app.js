@@ -23,6 +23,7 @@ app.use(shopRoutes);
 
 app.use(page404controller.get404);
 
+
 sequelize.sync()
 .then((result)=>{
     //console.log(result);

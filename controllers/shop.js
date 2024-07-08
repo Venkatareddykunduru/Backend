@@ -1,8 +1,8 @@
 const Product = require('../models/product');
 
 exports.getshop = (req, res, next) => {
-  Product.getallproducts()
-    .then(([data]) => {
+  Product.findAll()
+    .then((data) => {
       // Send the retrieved data as a JSON response
       console.log(data);
       res.json(data);
@@ -16,8 +16,12 @@ exports.getshop = (req, res, next) => {
 
 exports.deleteshop = (req, res, next) => {
   const id = req.params.id;
-  Product.deleteproduct(id)
-    .then(() => {
+  Product.findByPk(id)
+    .then((product) => {
+      
+      return product.destroy();
+    })
+    .then(()=>{
       console.log('Product deleted');
       res.status(200).json({ message: 'Product deleted successfully' });
     })
