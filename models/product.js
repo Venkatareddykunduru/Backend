@@ -1,4 +1,4 @@
-const fs = require('fs');
+const db=require('../util/database');
 
 module.exports = class Product {
   constructor(name) {
@@ -7,33 +7,26 @@ module.exports = class Product {
 
   saveproduct() {
     try {
-      fs.appendFileSync('products.json', JSON.stringify(this) + '\n');
-      console.log('product saved succesfully');
+      return db.execute('insert into products (title) values (?)',[this.name]);
+      //console.log('product saved succesfully');
     } catch (error) {
       console.error('Error saving product:', error);
     }
   }
   static getallproducts(){
     try {
-        // Read the file content as a string
-        const data = fs.readFileSync('products.json', 'utf8');
-        
-        // Split the file content by newline to get each JSON string
-        const lines = data.split('\n').filter(line => line.trim() !== '');
-        
-        // Parse each line as a JSON object
-        const products = lines.map(line => JSON.parse(line));
-        
-        // Log the objects to the console
-        console.log('printing products');
-        console.log(products);
-        
-        // Access individual objects
-        products.forEach(product => {
-          console.log(`Name: ${product.name}`);
-        });
+      return db.execute('select * from products');
       } catch (err) {
-        console.error('Error reading or parsing the file:', err);
+        console.log('Error getting products from database:', err);
       }
-  }
+    }
+
+    static deleteproduct(id){
+      try {
+        const sql = 'DELETE FROM products WHERE id = ?';
+      return db.execute(sql, [id]);
+      } catch (error) {
+        console.log('error deleting product: '+error);
+      }
+    }
 };
