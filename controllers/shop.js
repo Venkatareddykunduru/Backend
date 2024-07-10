@@ -1,7 +1,9 @@
 const Product = require('../models/product');
 
 exports.getshop = (req, res, next) => {
-  Product.findAll()
+
+  req.user.getProducts()
+  //Product.findAll()
     .then((data) => {
       // Send the retrieved data as a JSON response
       console.log(data);

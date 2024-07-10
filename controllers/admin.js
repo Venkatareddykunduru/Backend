@@ -4,7 +4,8 @@ const sequelize=require('../util/database');
 
 exports.postaddproduct=(req, res, next) => {
   const title=req.body.title;
-  Product.create({title:title})
+  req.user.createProduct({title:title})
+  //Product.create({title:title})
   .then(() => {
     console.log('Product saved');
     res.status(200).json({ message: 'Product Added successfully' });
