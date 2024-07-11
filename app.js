@@ -8,6 +8,10 @@ const page404controller = require('./controllers/page404.js');
 
 const Product = require('./models/product.js');
 const User = require('./models/user.js');
+const Order=require('./models/order.js');
+const Cart=require('./models/cart.js');
+const CartItem=require('./models/cart-item.js');
+const orderItem=require('./models/order-item.js');
 
 const app = express();
 
@@ -37,6 +41,13 @@ app.use(page404controller.get404);
 
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, {through:CartItem});
+Product.belongsToMany(Cart, {through:CartItem});
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product,{through:orderItem});
 (async () => {
     try {
         await sequelize.sync();
@@ -44,7 +55,9 @@ User.hasMany(Product);
         if (!user) {
             user = await User.create({ name: 'venkata', email: 'reddy@gmail.com' });
         }
+        let cart=await user.createCart();
         console.log('Available methods on user instance:', Object.keys(user.__proto__)); // Log available methods
+        console.log('Available methods on user instance:', Object.keys(cart.__proto__));
         app.listen(3000);
     } catch (err) {
         console.log(err);
